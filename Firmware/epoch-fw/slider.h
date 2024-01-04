@@ -5,6 +5,7 @@
 #include "XPT2046_Touchscreen.h"
 #include "Adafruit_ILI9341.h"
 
+#define SLIDER_DSBL 0x1042
 #define SLIDER_DIM 0x1202
 #define SLIDER_GLOW 0x85F0
 #define SLIDER_LIT ILI9341_GREEN
@@ -29,6 +30,7 @@
 class Slider {
 public:
   Slider();
+  static const float SLIDER_SCALE;
   bool begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val);
   void blank(); // clear area and draw frame only
   void update(); // draw or update slider
@@ -36,11 +38,12 @@ public:
   uint16_t getX();
   void setVal(int16_t v); // 0-255
   void setTitle(String t); // 1-3 characters only
-  static const float SLIDER_SCALE;
+  void setDisabled(boolean disabled);
 private:
   Adafruit_ILI9341* _tft;
   uint8_t _value;
   uint16_t _x;
+  boolean _disabled;
   String _title;
 };
 

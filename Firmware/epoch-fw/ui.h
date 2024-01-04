@@ -70,13 +70,14 @@ public:
   void drawDiscBase();
   void drawDiscTouch();
   void drawDiscGlyph(uint16_t n, const unsigned char *g1, const unsigned char *g2);
+  void drawTopGlyph(const unsigned char *g1, const unsigned char *g2);
   void drawSlider( uint16_t x, uint16_t y, uint16_t w, uint16_t h);
   void drawPausePlay();
   void setBackBtn(uint8_t loc); // 0=none, 1=center, 2=top-right
   void setStyle(uint8_t style); // UI_STYLE_*
   void setPlayMode( uint8_t mode ); // 0 = play,  1= pause
   uint8_t getPlayMode();
-  void drawTopTxt();
+  void drawTopTxt(uint8_t indent);
   void drawBotTxt();
   void setTopText( String t );
   void setBotText( String t );

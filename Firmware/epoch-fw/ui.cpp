@@ -154,6 +154,11 @@ boolean Ui::_pausePressed(TS_Point p) {
   return false;
 }
 
+void Ui::drawTopGlyph(const unsigned char *g1, const unsigned char *g2) {
+  _tft->drawBitmap(4, 8, g1, UI_GL_W, UI_GL_H, BTN_GREY);
+  _tft->drawBitmap(4, 8, g2, UI_GL_W, UI_GL_H, BTN_LIT);
+}
+
 void Ui::drawDiscGlyph(uint16_t n, const unsigned char *g1, const unsigned char *g2) {
   uint16_t x = 0;
   uint16_t y = 0;
@@ -195,9 +200,9 @@ void Ui::drawDiscGlyph(uint16_t n, const unsigned char *g1, const unsigned char 
   _tft->drawBitmap(x - UI_B_SZ, y - UI_GL_H / 2, g2, UI_GL_W, UI_GL_H, BTN_LIT);
 }
 
-void Ui::drawTopTxt() {
+void Ui::drawTopTxt( uint8_t indent) {
   _tft->setTextColor(ILI9341_DARKGREY);
-  _tft->setCursor(14, 4);
+  _tft->setCursor(indent, 8);
   _tft->setTextSize(2);
   _tft->println(_topTxt);
 }

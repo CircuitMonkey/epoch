@@ -20,8 +20,8 @@ void mode_1_0_start() {
   ui.setStyle(UI_STYLE_DISC);
   ui.blank();
 
-  ui.setTopText(" O N E   R I N G");  // 17 chars
-  ui.drawTopTxt();
+  ui.setTopText("  O N E   R I N G");  // 17 chars
+  ui.drawTopTxt(0);
 
   ui.setBotText("M O D E 1");  // 9 chars
   ui.drawBotTxt();
@@ -43,15 +43,18 @@ void mode_1_0_start() {
 void mode_1_1_start() {
   ui.setStyle(UI_STYLE_SLIDE_4);
   ui.blank();
+  ui.drawTopGlyph(glyph48m_slide_bg, glyph48m_slide_fg);
 
-  ui.setTopText("S L I D E R S");  // 17 chars
-  ui.drawTopTxt();
+  ui.setTopText("SLIDERS");  // 17 chars
+  ui.drawTopTxt(UI_GL_W+12);
 
   slider1.begin(&tft, " 1", SLIDER_4_X1, 40);
   slider2.begin(&tft, " 2", SLIDER_4_X2, 80);
-  slider3.begin(&tft, " 3", SLIDER_4_X3, 140);
-  slider4.begin(&tft, " 4", SLIDER_4_X4, 210);
+  slider3.begin(&tft, "  ", SLIDER_4_X3, 0);
+  slider4.begin(&tft, "  ", SLIDER_4_X4, 0);
 
+  slider3.setDisabled(true);
+  slider4.setDisabled(true);
 
   ui.setBackBtn(UI_BAK_TR);
   ui.setPlayMode(UI_MODE_PLAY);  // test pause/play glyph

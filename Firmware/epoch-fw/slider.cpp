@@ -9,13 +9,14 @@ bool Slider::begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val)
   _title = title;
   _x = x;
   _value = val;
+  _disabled = false;
 
   blank();
   _tft->setTextColor(SLIDER_GLOW);
-  _tft->setCursor(_x - SLIDER_4_W/2 + 2, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - SLIDER_TITLE_H/2 - 2);
+  _tft->setCursor(_x - SLIDER_4_W / 2 + 2, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - SLIDER_TITLE_H / 2 - 2);
   _tft->setTextSize(2);
   _tft->println(_title);
-  
+
   update();
 
   return 1;
@@ -26,29 +27,43 @@ bool Slider::begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val)
  */
 void Slider::blank() {
   _tft->fillRoundRect(_x - SLIDER_4_W / 2, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 2, SLIDER_4_W, SLIDER_H + SLIDER_BTN_H + 4, SLIDER_BTN_H / 3, ILI9341_BLACK);
-  _tft->drawRoundRect(_x - SLIDER_4_W / 2, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 2, SLIDER_4_W, SLIDER_H + SLIDER_BTN_H + 4, SLIDER_BTN_H / 3, SLIDER_LIT);
+  if (_disabled) {
+    _tft->drawRoundRect(_x - SLIDER_4_W / 2, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 2, SLIDER_4_W, SLIDER_H + SLIDER_BTN_H + 4, SLIDER_BTN_H / 3, SLIDER_DIM);
+  } else {
+    _tft->drawRoundRect(_x - SLIDER_4_W / 2, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 2, SLIDER_4_W, SLIDER_H + SLIDER_BTN_H + 4, SLIDER_BTN_H / 3, SLIDER_LIT);
+  }
 }
 
 /**
  * draw or update slider
  */
 void Slider::update() {
+
   // blank value area
-  _tft->fillRect(_x - SLIDER_4_W / 2 , SLIDER_Y + SLIDER_H / 2 + SLIDER_BTN_H / 2 + 2, SLIDER_4_W , SLIDER_VALUE_H, ILI9341_BLACK);
+  _tft->fillRect(_x - SLIDER_4_W / 2, SLIDER_Y + SLIDER_H / 2 + SLIDER_BTN_H / 2 + 2, SLIDER_4_W, SLIDER_VALUE_H, ILI9341_BLACK);
 
-  // draw value
-  _tft->setTextColor(ILI9341_DARKGREY);
-  _tft->setCursor(_x - SLIDER_4_W/2 + 2, SLIDER_Y + SLIDER_H / 2 + SLIDER_BTN_H / 2 + 4);
-  _tft->setTextSize(2);
-  _tft->println(_value);
+  if (!_disabled) {
+    // clear the slider area
+    _tft->fillRoundRect(_x - SLIDER_4_W / 2 + 1, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 1, SLIDER_4_W - 2, SLIDER_H + SLIDER_BTN_H + 2, SLIDER_BTN_H / 3, SLIDER_DIM);
 
-  uint16_t y = (uint16_t)(SLIDER_Y + SLIDER_H / 2 - (float)(SLIDER_SCALE * _value));
+    // draw value
+    _tft->setTextColor(ILI9341_DARKGREY);
+    _tft->setCursor(_x - SLIDER_4_W / 2 + 2, SLIDER_Y + SLIDER_H / 2 + SLIDER_BTN_H / 2 + 4);
+    _tft->setTextSize(2);
+    _tft->println(_value);
 
-  // clear the slider area
-  _tft->fillRoundRect(_x - SLIDER_4_W / 2 + 1, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 1, SLIDER_4_W - 2, SLIDER_H + SLIDER_BTN_H + 2, SLIDER_BTN_H / 3, SLIDER_DIM);
+    uint16_t y = (uint16_t)(SLIDER_Y + SLIDER_H / 2 - (float)(SLIDER_SCALE * _value));
+    // draw the slider knob
+    _tft->fillRoundRect(_x - SLIDER_4_W / 2 + 2, y - SLIDER_BTN_H / 2 + 1, SLIDER_4_W - 4, SLIDER_BTN_H - 1, SLIDER_BTN_H / 3, SLIDER_GLOW);
+  } else {
+    _tft->fillRoundRect(_x - SLIDER_4_W / 2 + 1, SLIDER_Y - SLIDER_H / 2 - SLIDER_BTN_H / 2 - 1, SLIDER_4_W - 2, SLIDER_H + SLIDER_BTN_H + 2, SLIDER_BTN_H / 3, SLIDER_DSBL);
+  }
+}
 
-  // draw the slider knob
-  _tft->fillRoundRect(_x - SLIDER_4_W / 2 + 2, y - SLIDER_BTN_H / 2 + 1, SLIDER_4_W - 4, SLIDER_BTN_H - 1, SLIDER_BTN_H / 3, SLIDER_GLOW);
+void Slider::setDisabled(boolean disabled) {
+  _disabled = disabled;
+  blank();
+  update();
 }
 
 /**

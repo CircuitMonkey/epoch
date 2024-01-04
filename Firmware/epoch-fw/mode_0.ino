@@ -16,8 +16,8 @@ void mode_0_start() {
   ui.drawDiscGlyph(7, glyph48m_vibe_8, glyph48m_vibe_7);
   ui.drawDiscGlyph(8, glyph48m_vibe_8, glyph48m_vibe_8);
 
-  ui.setTopText("C O N F I G U R E");  // 17 chars
-  ui.drawTopTxt();
+  ui.setTopText("  C O N F I G U R E");  // 17 chars
+  ui.drawTopTxt(0);
   ui.setBotText("E P O C H");  // 9 chars
   ui.drawBotTxt();
 }
