@@ -12,6 +12,7 @@
 
 #define SLIDER_TITLE_H  32
 #define SLIDER_VALUE_H  16
+#define SLIDER_VAL_MAX 255
 
 #define SLIDER_SCR_W 240
 #define SLIDER_SCR_H 320
@@ -30,18 +31,20 @@
 class Slider {
 public:
   Slider();
-  static const float SLIDER_SCALE;
+  //static const float SLIDER_SCALE;
   bool begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val);
+  bool begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val, uint8_t max);
   void blank(); // clear area and draw frame only
   void update(); // draw or update slider
   uint8_t getVal(); // 0-255
-  uint16_t getX();
+  float getScale();
   void setVal(int16_t v); // 0-255
   void setTitle(String t); // 1-3 characters only
   void setDisabled(boolean disabled);
 private:
   Adafruit_ILI9341* _tft;
   uint8_t _value;
+  uint8_t _max;
   uint16_t _x;
   boolean _disabled;
   String _title;

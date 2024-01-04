@@ -1,14 +1,20 @@
 #include "slider.h"
 
-const float Slider::SLIDER_SCALE = SLIDER_H / 255.0;  // FLoating point must be post-compile computed.
+//const float Slider::SLIDER_SCALE = SLIDER_H / 255.0;  // FLoating point must be post-compile computed.
 
 Slider::Slider() {}
 
 bool Slider::begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val) {
+  return begin(tft, title, x, val, SLIDER_VAL_MAX);
+}
+
+bool Slider::begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val, uint8_t max) {
+
   _tft = tft;
   _title = title;
   _x = x;
   _value = val;
+  _max = max;
   _disabled = false;
 
   blank();
@@ -18,6 +24,11 @@ bool Slider::begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val)
   _tft->println(_title);
 
   update();
+
+  // Serial.print( "Slider ");
+  // Serial.print( _title );
+  // Serial.print( "  scale=");
+  // Serial.println( getScale() );
 
   return 1;
 }
@@ -52,7 +63,7 @@ void Slider::update() {
     _tft->setTextSize(2);
     _tft->println(_value);
 
-    uint16_t y = (uint16_t)(SLIDER_Y + SLIDER_H / 2 - (float)(SLIDER_SCALE * _value));
+    uint16_t y = (uint16_t)(SLIDER_Y + SLIDER_H / 2 - (float)(getScale() * _value));
     // draw the slider knob
     _tft->fillRoundRect(_x - SLIDER_4_W / 2 + 2, y - SLIDER_BTN_H / 2 + 1, SLIDER_4_W - 4, SLIDER_BTN_H - 1, SLIDER_BTN_H / 3, SLIDER_GLOW);
   } else {
@@ -75,6 +86,10 @@ uint8_t Slider::getVal() {
   return _value;
 }
 
+float Slider::getScale() {
+  return SLIDER_H/(float)_max;
+}
+
 /**
  * set slider value
  *
@@ -83,7 +98,7 @@ uint8_t Slider::getVal() {
 void Slider::setVal(int16_t v) {
   // TODO: Range checking  0-255
   if (v < 0) v = 0;
-  if (v > 255) v = 255;
+  if (v > _max) v = _max;
   _value = v;
 }
 

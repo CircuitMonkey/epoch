@@ -46,10 +46,10 @@ void mode_1_1_start() {
   ui.drawTopGlyph(glyph48m_slide_bg, glyph48m_slide_fg);
 
   ui.setTopText("SLIDERS");  // 17 chars
-  ui.drawTopTxt(UI_GL_W+12);
+  ui.drawTopTxt(UI_GL_W + 12);
 
   slider1.begin(&tft, " 1", SLIDER_4_X1, 40);
-  slider2.begin(&tft, " 2", SLIDER_4_X2, 80);
+  slider2.begin(&tft, " 2", SLIDER_4_X2, 50, 100);
   slider3.begin(&tft, "  ", SLIDER_4_X3, 0);
   slider4.begin(&tft, "  ", SLIDER_4_X4, 0);
 
@@ -119,38 +119,39 @@ void mode_1_1_handle_slide() {
   // If point is on a slider, move it.
   uint8_t btn = ui.getItemPressed(p);
   if (btn != UI_BUTTON_NONE && btn == lastBtn) {  // still dragging the same thing.
-    // Serial.print("M1.1 Drag: btn=");
-    // Serial.print(btn);
-    // Serial.print("  ");
-    // Serial.print(pDragStart.x - p.x);
-    // Serial.print(",");
-    // Serial.print(pDragStart.y - p.y);
-    // Serial.print(" valDiff:");
-    double vD = (double)(pDragStart.y - p.y) / slider1.SLIDER_SCALE;
-    //Serial.println(vD);
-    //uint8_t v = slider1.getVal();
-    //Serial.print( "  oldVal: ");
-    //Serial.print( v );
-    uint16_t nv = slideDragStart + vD;
-    // Serial.print( "  newVal: ");
-    // Serial.println( nv );
 
     switch (btn) {
       case 1:
-        slider1.setVal(nv);
-        slider1.update();
+        {
+          float vD = (float)(pDragStart.y - p.y) / slider1.getScale();  // todo float?
+          uint16_t nv = slideDragStart + vD;
+          slider1.setVal(nv);
+          slider1.update();
+        }
         break;
       case 2:
-        slider2.setVal(nv);
-        slider2.update();
+        {
+          float vD = (float)(pDragStart.y - p.y) / slider2.getScale();  // todo float?
+          uint16_t nv = slideDragStart + vD;
+          slider2.setVal(nv);
+          slider2.update();
+        }
         break;
       case 3:
-        slider3.setVal(nv);
-        slider3.update();
+        {
+          float vD = (float)(pDragStart.y - p.y) / slider3.getScale();  // todo float?
+          uint16_t nv = slideDragStart + vD;
+          slider3.setVal(nv);
+          slider3.update();
+        }
         break;
       case 4:
-        slider4.setVal(nv);
-        slider4.update();
+        {
+          float vD = (float)(pDragStart.y - p.y) / slider4.getScale();  // todo float?
+          uint16_t nv = slideDragStart + vD;
+          slider4.setVal(nv);
+          slider4.update();
+        }
         break;
     }
   }
