@@ -76,8 +76,6 @@ portMUX_TYPE timerMux0 = portMUX_INITIALIZER_UNLOCKED;
 void IRAM_ATTR Timer0_ISR() {
   // Set semaphore.
   updateSemaphore = true;
-
-  //vibes.update();
 }
 
 void setup() {
@@ -178,14 +176,10 @@ void loop() {
           tft.print("No...");
           tft.setCursor(80, 120);
           tft.print("Touch");
-          Serial.println("No Touch");
         }
-        //Serial.println("no touch");
       }
       wastouched = istouched;
-
       delay(70);
-      // Touch test
   }
   pLast.x = p.x;
   pLast.y = p.y;
