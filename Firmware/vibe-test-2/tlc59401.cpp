@@ -41,7 +41,7 @@ bool TLC59401_PWM::begin(SPIClass &wspi) {
     blank(HIGH);
     digitalWrite(_xLatPin, LOW);
     _pspi->beginTransaction(SPI_SETTING);
-    for (int i = 0; i < 256; i++) {
+    for (int i = 0; i < 12; i++) {
       _pspi->transfer16(0xffff);
     }
     digitalWrite(_xLatPin, HIGH);
