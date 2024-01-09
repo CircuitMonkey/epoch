@@ -12,11 +12,12 @@ Slider slider1 = Slider();
 Slider slider2 = Slider();
 Slider slider3 = Slider();
 Slider slider4 = Slider();
+uint8_t mode_1_1_vibeVals[4] = { 5, 9, 14, 18 };
 
 void mode_1_0_start() {
 
   // TODO: Glyph
-
+  vibes.pause(true);
   ui.setStyle(UI_STYLE_DISC);
   ui.blank();
 
@@ -48,16 +49,22 @@ void mode_1_1_start() {
   ui.setTopText("SLIDERS");  // 17 chars
   ui.drawTopTxt(UI_GL_W + 12);
 
-  slider1.begin(&tft, " 1", SLIDER_4_X1, 40);
-  slider2.begin(&tft, " 2", SLIDER_4_X2, 50, 100);
-  slider3.begin(&tft, "  ", SLIDER_4_X3, 0);
-  slider4.begin(&tft, "  ", SLIDER_4_X4, 0);
+  slider1.begin(&tft, " 1", SLIDER_4_X1, mode_1_1_vibeVals[0], 63);
+  slider2.begin(&tft, " 2", SLIDER_4_X2, mode_1_1_vibeVals[1], 63);
+  slider3.begin(&tft, " 3", SLIDER_4_X3, mode_1_1_vibeVals[2], 63);
+  slider4.begin(&tft, " 4", SLIDER_4_X4, mode_1_1_vibeVals[3], 63);
+  vibes.set(0, mode_1_1_vibeVals[0]);
+  vibes.set(1, mode_1_1_vibeVals[1]);
+  vibes.set(2, mode_1_1_vibeVals[2]);
+  vibes.set(3, mode_1_1_vibeVals[3]);
+  vibes.pack();
+  vibes.pause(true);
 
-  slider3.setDisabled(true);
-  slider4.setDisabled(true);
+  //slider3.setDisabled(true);
+  //slider4.setDisabled(true);
 
   ui.setBackBtn(UI_BAK_TR);
-  ui.setPlayMode(UI_MODE_PLAY);  // test pause/play glyph
+  ui.setPlayMode(UI_MODE_PAUSE);  // test pause/play glyph
   ui.drawPausePlay();            // Pause button
 }
 
@@ -76,7 +83,6 @@ void mode_1_loop() {
       }
       wastouched = istouched;
     } else {  // Dragging or still touching
-      //TS_Point pTft = p2lcd(p);
       switch (mode_1_function) {
         case 1:  // drag slider if selected.
           mode_1_1_handle_slide();
@@ -88,7 +94,6 @@ void mode_1_loop() {
     wastouched = 0;
     lastBtn = 99;
   }
-  delay(100);
 }
 
 /**
@@ -123,34 +128,46 @@ void mode_1_1_handle_slide() {
     switch (btn) {
       case 1:
         {
-          float vD = (float)(pDragStart.y - p.y) / slider1.getScale();  // todo float?
+          float vD = (float)(pDragStart.y - p.y) / slider1.getScale();
           uint16_t nv = slideDragStart + vD;
           slider1.setVal(nv);
           slider1.update();
+          mode_1_1_vibeVals[0] = slider1.getVal();
+          vibes.set(0, mode_1_1_vibeVals[0]);
+          vibes.pack();
         }
         break;
       case 2:
         {
-          float vD = (float)(pDragStart.y - p.y) / slider2.getScale();  // todo float?
+          float vD = (float)(pDragStart.y - p.y) / slider2.getScale();
           uint16_t nv = slideDragStart + vD;
           slider2.setVal(nv);
           slider2.update();
+          mode_1_1_vibeVals[1] = slider2.getVal();
+          vibes.set(1, mode_1_1_vibeVals[1]);
+          vibes.pack();
         }
         break;
       case 3:
         {
-          float vD = (float)(pDragStart.y - p.y) / slider3.getScale();  // todo float?
+          float vD = (float)(pDragStart.y - p.y) / slider3.getScale();
           uint16_t nv = slideDragStart + vD;
           slider3.setVal(nv);
           slider3.update();
+          mode_1_1_vibeVals[2] = slider3.getVal();
+          vibes.set(2, mode_1_1_vibeVals[2]);
+          vibes.pack();
         }
         break;
       case 4:
         {
-          float vD = (float)(pDragStart.y - p.y) / slider4.getScale();  // todo float?
+          float vD = (float)(pDragStart.y - p.y) / slider4.getScale();
           uint16_t nv = slideDragStart + vD;
           slider4.setVal(nv);
           slider4.update();
+          mode_1_1_vibeVals[3] = slider4.getVal();
+          vibes.set(3, mode_1_1_vibeVals[3]);
+          vibes.pack();
         }
         break;
     }
@@ -182,12 +199,15 @@ void mode_1_1_handle_touch(uint8_t btn) {
         switch (ui.getPlayMode()) {
           case UI_MODE_PLAY:
             ui.setPlayMode(UI_MODE_PAUSE);
+            vibes.pause(true);
             break;
           case UI_MODE_PAUSE:
             ui.setPlayMode(UI_MODE_PLAY);
+            vibes.pause(false);
             break;
         }
         ui.drawPausePlay();
+        delay(14);
         break;
     }
   }

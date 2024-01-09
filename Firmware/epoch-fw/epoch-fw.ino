@@ -23,11 +23,12 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include "XPT2046_Touchscreen.h"
+#include "tlc59401.h"
 #include "glyphs.h"
 #include "ui.h"
 #include "slider.h"
 
-// For the Adafruit shield, these are the default.
+// ILI9341 TFT Display
 #define TFT_DC 13
 #define TFT_CS 12
 #define TFT_MOSI 18
@@ -36,8 +37,16 @@
 #define TFT_RST A0
 #define TFT_LED 15
 
+// Touch
 #define TCH_CS A1
 #define TCH_IRQ A4
+
+// Motor Chip
+#define VIB_MODE 33
+#define VIB_BLANK 14
+#define VIB_GSCLK 27
+#define VIB_XLAT 21
+
 //#define SPI_DEFAULT_FREQ 2000000
 //#define SPI_SETTING     SPISettings(2000000, MSBFIRST, SPI_MODE0)
 
@@ -47,6 +56,7 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 //Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
 XPT2046_Touchscreen ts(TCH_CS);
 //XPT2046_Touchscreen ts(TCH_CS,TCH_IRQ);
+TLC59401_PWM vibes = TLC59401_PWM(VIB_MODE, VIB_BLANK, VIB_GSCLK, VIB_XLAT);
 
 Ui ui = Ui();
 
@@ -57,12 +67,24 @@ TS_Point pLast;
 TS_Point pDragStart;
 uint8_t slideDragStart;
 uint8_t lastBtn = 99;
-
 uint8_t guiMode = 0;
+bool updateSemaphore = false;
+
+hw_timer_t *Timer0_Cfg = NULL;
+portMUX_TYPE timerMux0 = portMUX_INITIALIZER_UNLOCKED;
+
+void IRAM_ATTR Timer0_ISR() {
+  // Set semaphore.
+  updateSemaphore = true;
+
+  //vibes.update();
+}
 
 void setup() {
   Serial.begin(115200);
+  while (!Serial) delay(10);
   Serial.println("\n\nEpoch Haptic Generator");
+  Serial.flush();
 
   pinMode(TFT_LED, OUTPUT);
   digitalWrite(TFT_LED, HIGH);
@@ -74,28 +96,37 @@ void setup() {
   tft.begin();
   ts.begin();
   ts.setRotation(2);  // X/Y==0 top-left.
+  vibes.begin();  // vibes assume SPI was set up by TFT
+
+
+  Timer0_Cfg = timerBegin(1, 80, true);  // channel 7, prescaler 80, tick count up.
+  timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, true);
+  timerAlarmWrite(Timer0_Cfg, 17000, true);  // doISR every 17000 ticks =17mS
+  timerAlarmEnable(Timer0_Cfg);
+
+  vibes.pause(true);
 
   digitalWrite(TFT_LED, LOW);
   // TODO:  PWM LED brightness
 
   // read diagnostics (optional but can help debug problems)
-  uint8_t x = tft.readcommand8(ILI9341_RDMODE);  // Default 0xCA
-  Serial.print("Display Power Mode: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDMADCTL);  // Default 0x24
-  Serial.print("MADCTL Mode: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDPIXFMT);
-  Serial.print("Pixel Format: 0x");  // Default 0x2;
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDIMGFMT);  // Default 0xC0
-  Serial.print("Image Format: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDSELFDIAG);  // Default 0xE0
-  Serial.print("Self Diagnostic: 0x");
-  Serial.println(x, HEX);
+  // uint8_t x = tft.readcommand8(ILI9341_RDMODE);  // Default 0xCA
+  // Serial.print("Display Power Mode: 0x");
+  // Serial.println(x, HEX);
+  // x = tft.readcommand8(ILI9341_RDMADCTL);  // Default 0x24
+  // Serial.print("MADCTL Mode: 0x");
+  // Serial.println(x, HEX);
+  // x = tft.readcommand8(ILI9341_RDPIXFMT);
+  // Serial.print("Pixel Format: 0x");  // Default 0x2;
+  // Serial.println(x, HEX);
+  // x = tft.readcommand8(ILI9341_RDIMGFMT);  // Default 0xC0
+  // Serial.print("Image Format: 0x");
+  // Serial.println(x, HEX);
+  // x = tft.readcommand8(ILI9341_RDSELFDIAG);  // Default 0xE0
+  // Serial.print("Self Diagnostic: 0x");
+  // Serial.println(x, HEX);
 
-  Serial.println(F("Done!"));
+  // Serial.println(F("Done!"));
 
   ui.begin(&tft, glyph48m_back, glyph48m_pause, glyph48m_play );
   mode_0_start();
@@ -158,4 +189,8 @@ void loop() {
   }
   pLast.x = p.x;
   pLast.y = p.y;
+  if ( updateSemaphore ) {
+    vibes.update();
+    updateSemaphore = false;
+  }
 }
