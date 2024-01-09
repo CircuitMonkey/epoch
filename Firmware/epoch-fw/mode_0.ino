@@ -25,10 +25,9 @@ void mode_0_start() {
 void mode_0_loop() {
   if (istouched) {
     if (!wastouched) {  // New touch
-      Serial.print("Button Pressed: ");
-      //TS_Point pTft = p2lcd(p);
       uint8_t btn = ui.getItemPressed(p);
-      Serial.println(btn);
+      //Serial.print("Button Pressed: ");
+      //Serial.println(btn);
       guiMode = btn;
 
       // TODO: Switch statement
@@ -48,7 +47,7 @@ void mode_0_loop() {
   } else {  // end of istouched
     wastouched = 0;
   }
-  delay(100);
+  delay(70);
 }
 
 // uint8_t mode_0_btn_pressed( TS_Point p ) {
