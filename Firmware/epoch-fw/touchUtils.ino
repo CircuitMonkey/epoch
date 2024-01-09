@@ -22,3 +22,20 @@ TS_Point p2lcd( TS_Point p ) {
   return TS_Point( tX, tY, 0);
 }
 
+void printTftSettings() {
+  uint8_t x = tft.readcommand8(ILI9341_RDMODE);  // Default 0xCA
+  Serial.print("Display Power Mode: 0x");
+  Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDMADCTL);  // Default 0x24
+  Serial.print("MADCTL Mode: 0x");
+  Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDPIXFMT);
+  Serial.print("Pixel Format: 0x");  // Default 0x2;
+  Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDIMGFMT);  // Default 0xC0
+  Serial.print("Image Format: 0x");
+  Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDSELFDIAG);  // Default 0xE0
+  Serial.print("Self Diagnostic: 0x");
+  Serial.println(x, HEX);
+}
