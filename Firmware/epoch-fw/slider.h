@@ -30,10 +30,11 @@
 
 class Slider {
 public:
-  Slider();
+  Slider( String title, uint16_t x, uint8_t val, uint8_t max ) : _title(title), _x(x), _value(val), _vmax(max) {};
   //static const float SLIDER_SCALE;
-  bool begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val);
-  bool begin(Adafruit_ILI9341 *tft, String title, uint16_t x, uint8_t val, uint8_t max);
+  bool begin(Adafruit_ILI9341 *tft);
+  //bool begin(Adafruit_ILI9341 *tft, uint16_t x, uint8_t val);
+  //bool begin(Adafruit_ILI9341 *tft, uint16_t x, uint8_t val, uint8_t max);
   void blank(); // clear area and draw frame only
   void update(); // draw or update slider
   uint8_t getVal(); // 0-255
@@ -44,7 +45,7 @@ public:
 private:
   Adafruit_ILI9341* _tft;
   uint8_t _value;
-  uint8_t _max;
+  uint8_t _vmax;
   uint16_t _x;
   boolean _disabled;
   String _title;

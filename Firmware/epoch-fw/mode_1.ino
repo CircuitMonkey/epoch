@@ -8,11 +8,12 @@
 // Mode 1 functions: 0:Main menu,  1:Sliders, 2:Cycle, 3:Wave, 4:Pulse
 uint8_t mode_1_function = 0;
 
-Slider slider1 = Slider();
-Slider slider2 = Slider();
-Slider slider3 = Slider();
-Slider slider4 = Slider();
-uint8_t mode_1_1_vibeVals[4] = { 5, 9, 14, 18 };
+Slider m_1_1_slider[4] = {
+  Slider(" 1", SLIDER_4_X1, 5, 63),
+  Slider(" 2", SLIDER_4_X2, 9, 63),
+  Slider(" 3", SLIDER_4_X3, 14, 63),
+  Slider(" 4", SLIDER_4_X4, 18, 63)
+};
 
 void mode_1_0_start() {
 
@@ -42,30 +43,19 @@ void mode_1_0_start() {
 }
 
 void mode_1_1_start() {
-  ui.setStyle(UI_STYLE_SLIDE_4);
-  ui.blank();
-  ui.drawTopGlyph(glyph48m_slide_bg, glyph48m_slide_fg);
+  ui.setStyleSlide4("SLIDERS", glyph48m_slide_bg, glyph48m_slide_fg);
 
-  ui.setTopText("SLIDERS");  // 17 chars
-  ui.drawTopTxt(UI_GL_W + 12);
+  for (int i = 0; i < 4; i++) {
+    m_1_1_slider[i].begin(&tft);
+    vibes.set(i, m_1_1_slider[i].getVal());
+  }
+  //m_1_1_slider[2].setDisabled(true);
+  //m_1_1_slider[3].setDisabled(true);
 
-  slider1.begin(&tft, " 1", SLIDER_4_X1, mode_1_1_vibeVals[0], 63);
-  slider2.begin(&tft, " 2", SLIDER_4_X2, mode_1_1_vibeVals[1], 63);
-  slider3.begin(&tft, " 3", SLIDER_4_X3, mode_1_1_vibeVals[2], 63);
-  slider4.begin(&tft, " 4", SLIDER_4_X4, mode_1_1_vibeVals[3], 63);
-  vibes.set(0, mode_1_1_vibeVals[0]);
-  vibes.set(1, mode_1_1_vibeVals[1]);
-  vibes.set(2, mode_1_1_vibeVals[2]);
-  vibes.set(3, mode_1_1_vibeVals[3]);
-  vibes.pack();
+  vibes.pack();  // do whenever you call one or more vibes.set()
+
+  // TODO: ask UI for play mode and set appropriately.
   vibes.pause(true);
-
-  //slider3.setDisabled(true);
-  //slider4.setDisabled(true);
-
-  ui.setBackBtn(UI_BAK_TR);
-  ui.setPlayMode(UI_MODE_PAUSE);  // test pause/play glyph
-  ui.drawPausePlay();            // Pause button
 }
 
 void mode_1_loop() {
@@ -120,56 +110,17 @@ void mode_1_0_handle_btn(uint8_t btn) {
 }
 
 void mode_1_1_handle_slide() {
-  //TS_Point pL = p2lcd
   // If point is on a slider, move it.
   uint8_t btn = ui.getItemPressed(p);
   if (btn != UI_BUTTON_NONE && btn == lastBtn) {  // still dragging the same thing.
-
-    switch (btn) {
-      case 1:
-        {
-          float vD = (float)(pDragStart.y - p.y) / slider1.getScale();
-          uint16_t nv = slideDragStart + vD;
-          slider1.setVal(nv);
-          slider1.update();
-          mode_1_1_vibeVals[0] = slider1.getVal();
-          vibes.set(0, mode_1_1_vibeVals[0]);
-          vibes.pack();
-        }
-        break;
-      case 2:
-        {
-          float vD = (float)(pDragStart.y - p.y) / slider2.getScale();
-          uint16_t nv = slideDragStart + vD;
-          slider2.setVal(nv);
-          slider2.update();
-          mode_1_1_vibeVals[1] = slider2.getVal();
-          vibes.set(1, mode_1_1_vibeVals[1]);
-          vibes.pack();
-        }
-        break;
-      case 3:
-        {
-          float vD = (float)(pDragStart.y - p.y) / slider3.getScale();
-          uint16_t nv = slideDragStart + vD;
-          slider3.setVal(nv);
-          slider3.update();
-          mode_1_1_vibeVals[2] = slider3.getVal();
-          vibes.set(2, mode_1_1_vibeVals[2]);
-          vibes.pack();
-        }
-        break;
-      case 4:
-        {
-          float vD = (float)(pDragStart.y - p.y) / slider4.getScale();
-          uint16_t nv = slideDragStart + vD;
-          slider4.setVal(nv);
-          slider4.update();
-          mode_1_1_vibeVals[3] = slider4.getVal();
-          vibes.set(3, mode_1_1_vibeVals[3]);
-          vibes.pack();
-        }
-        break;
+    if (btn >= 1 && btn <= 4) {                   // yes, it's a slider
+      uint8_t idx = btn-1;
+      float vDrag = (float)(pDragStart.y - p.y) / m_1_1_slider[idx].getScale();
+      uint16_t nv = slideDragStart + vDrag;
+      m_1_1_slider[idx].setVal(nv);
+      m_1_1_slider[idx].update();
+      vibes.set(idx, m_1_1_slider[idx].getVal());
+      vibes.pack();
     }
   }
 }
@@ -184,16 +135,16 @@ void mode_1_1_handle_touch(uint8_t btn) {
     lastBtn = btn;  // might be start of slide.
     switch (btn) {
       case 1:
-        slideDragStart = slider1.getVal();
+        slideDragStart = m_1_1_slider[0].getVal();
         break;
       case 2:
-        slideDragStart = slider2.getVal();
+        slideDragStart = m_1_1_slider[1].getVal();
         break;
       case 3:
-        slideDragStart = slider3.getVal();
+        slideDragStart = m_1_1_slider[2].getVal();
         break;
       case 4:
-        slideDragStart = slider4.getVal();
+        slideDragStart = m_1_1_slider[3].getVal();
         break;
       case UI_BTN_PAUSE:
         switch (ui.getPlayMode()) {
