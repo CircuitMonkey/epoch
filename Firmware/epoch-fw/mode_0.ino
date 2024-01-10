@@ -36,9 +36,9 @@ void mode_0_loop() {
         case 1:
           mode_1_0_start();
           break;
-        // case 2:
-        //   mode_2_0_start();
-        //   break;
+        case 2:
+          mode_2_0_start();
+          break;
       }
       wastouched = istouched;
     
@@ -49,32 +49,3 @@ void mode_0_loop() {
   }
   delay(70);
 }
-
-// uint8_t mode_0_btn_pressed( TS_Point p ) {
-//   uint16_t bSz = UI_B_SZ;
-//   if ( p.x > UI_B1_X-bSz && p.x < UI_B1_X+bSz &&
-//        p.y > UI_B1_Y-bSz && p.y < UI_B1_Y+bSz
-//   ) { return 1; }
-//   if ( p.x > UI_B2_X-bSz && p.x < UI_B2_X+bSz &&
-//        p.y > UI_B2_Y-bSz && p.y < UI_B2_Y+bSz
-//   ) { return 2; }
-//   if ( p.x > UI_B3_X-bSz && p.x < UI_B3_X+bSz &&
-//        p.y > UI_B3_Y-bSz && p.y < UI_B3_Y+bSz
-//   ) { return 3; }
-//   if ( p.x > UI_B4_X-bSz && p.x < UI_B4_X+bSz &&
-//        p.y > UI_B4_Y-bSz && p.y < UI_B4_Y+bSz
-//   ) { return 4; }
-//   if ( p.x > UI_B5_X-bSz && p.x < UI_B5_X+bSz &&
-//        p.y > UI_B5_Y-bSz && p.y < UI_B5_Y+bSz
-//   ) { return 5; }
-//   if ( p.x > UI_B6_X-bSz && p.x < UI_B6_X+bSz &&
-//        p.y > UI_B6_Y-bSz && p.y < UI_B6_Y+bSz
-//   ) { return 6; }
-//   if ( p.x > UI_B7_X-bSz && p.x < UI_B7_X+bSz &&
-//        p.y > UI_B7_Y-bSz && p.y < UI_B7_Y+bSz
-//   ) { return 7; }
-//   if ( p.x > UI_B8_X-bSz && p.x < UI_B8_X+bSz &&
-//        p.y > UI_B8_Y-bSz && p.y < UI_B8_Y+bSz
-//   ) { return 8; }
-//   return 0;
-// }

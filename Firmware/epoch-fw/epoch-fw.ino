@@ -127,6 +127,9 @@ void loop() {
       mode_1_loop();
       break;
     case 2:
+      mode_2_loop();
+      break;
+    case 77: // OLD Debug code.  Not used.
       if (istouched) {
         if (!wastouched) {
           tft.fillScreen(ILI9341_BLACK);
