@@ -11,35 +11,19 @@ uint8_t mode_1_function = 0;
 Slider m_1_1_slider[4] = {
   Slider(" 1", SLIDER_4_X1, 5, 63),
   Slider(" 2", SLIDER_4_X2, 9, 63),
-  Slider(" 3", SLIDER_4_X3, 14, 63),
-  Slider(" 4", SLIDER_4_X4, 18, 63)
+  Slider(" 3", SLIDER_4_X3, 0, 63),
+  Slider(" 4", SLIDER_4_X4, 0, 63)
 };
 
+// back button is at index 0.
+const unsigned char *m_1_0_glyphs_bg[9] = { glyph48m_back, glyph48m_slide_bg, glyph48m_cycle, glyph48m_wave, glyph48m_pulse, glyph48m_blank, glyph48m_blank, glyph48m_blank, glyph48m_blank };
+const unsigned char *m_1_0_glyphs_fg[9] = { glyph48m_back, glyph48m_slide_fg, glyph48m_cycle, glyph48m_wave, glyph48m_pulse, glyph48m_blank, glyph48m_blank, glyph48m_blank, glyph48m_blank };
+
 void mode_1_0_start() {
+  ui.setStyleDisc("O N E   R I N G", "M O D E 1", glyph48m_vibe_8, glyph48m_vibe_1, m_1_0_glyphs_bg, m_1_0_glyphs_fg);
 
-  // TODO: Glyph
+  // TODO: Set based on UI pause mode.
   vibes.pause(true);
-  ui.setStyle(UI_STYLE_DISC);
-  ui.blank();
-
-  ui.setTopText("  O N E   R I N G");  // 17 chars
-  ui.drawTopTxt(0);
-
-  ui.setBotText("M O D E 1");  // 9 chars
-  ui.drawBotTxt();
-
-  ui.drawDiscBase();
-
-  ui.drawDiscGlyph(1, glyph48m_slide_bg, glyph48m_slide_fg);
-  ui.drawDiscGlyph(2, glyph48m_cycle, glyph48m_cycle);
-  ui.drawDiscGlyph(3, glyph48m_wave, glyph48m_wave);
-  ui.drawDiscGlyph(4, glyph48m_pulse, glyph48m_pulse);
-  ui.drawDiscGlyph(5, glyph48m_blank, glyph48m_blank);
-  ui.drawDiscGlyph(6, glyph48m_blank, glyph48m_blank);
-  ui.drawDiscGlyph(7, glyph48m_blank, glyph48m_blank);
-  ui.drawDiscGlyph(8, glyph48m_blank, glyph48m_blank);
-
-  ui.setBackBtn(UI_BAK_CENTER);
 }
 
 void mode_1_1_start() {
@@ -49,8 +33,8 @@ void mode_1_1_start() {
     m_1_1_slider[i].begin(&tft);
     vibes.set(i, m_1_1_slider[i].getVal());
   }
-  //m_1_1_slider[2].setDisabled(true);
-  //m_1_1_slider[3].setDisabled(true);
+  m_1_1_slider[2].setDisabled(true);
+  m_1_1_slider[3].setDisabled(true);
 
   vibes.pack();  // do whenever you call one or more vibes.set()
 
@@ -114,7 +98,7 @@ void mode_1_1_handle_slide() {
   uint8_t btn = ui.getItemPressed(p);
   if (btn != UI_BUTTON_NONE && btn == lastBtn) {  // still dragging the same thing.
     if (btn >= 1 && btn <= 4) {                   // yes, it's a slider
-      uint8_t idx = btn-1;
+      uint8_t idx = btn - 1;
       float vDrag = (float)(pDragStart.y - p.y) / m_1_1_slider[idx].getScale();
       uint16_t nv = slideDragStart + vDrag;
       m_1_1_slider[idx].setVal(nv);
@@ -135,16 +119,10 @@ void mode_1_1_handle_touch(uint8_t btn) {
     lastBtn = btn;  // might be start of slide.
     switch (btn) {
       case 1:
-        slideDragStart = m_1_1_slider[0].getVal();
-        break;
       case 2:
-        slideDragStart = m_1_1_slider[1].getVal();
-        break;
-      case 3:
-        slideDragStart = m_1_1_slider[2].getVal();
-        break;
-      case 4:
-        slideDragStart = m_1_1_slider[3].getVal();
+      //case 3:  // disabled
+      //case 4:  // disabled
+        slideDragStart = m_1_1_slider[btn-1].getVal();
         break;
       case UI_BTN_PAUSE:
         switch (ui.getPlayMode()) {
