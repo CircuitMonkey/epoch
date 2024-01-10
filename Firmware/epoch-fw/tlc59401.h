@@ -33,7 +33,8 @@
 
 #define GS_TIMER_CHANNEL 8
 #define GS_RES 4
-#define GS_FREQ 250000
+#define GS_FREQ 40980
+#define GS_TICKS 4096
 #define GS_DUTY 8
 
 class TLC59401_PWM {
@@ -42,6 +43,7 @@ public:
     : _modePin(mode), _blankPin(blank), _gsClkPin(gsClk), _xLatPin(xLat) {}
   bool begin(SPIClass &wspi = SPI);
   void set(uint8_t channel, uint8_t value);
+  void setRaw(uint8_t channel, uint8_t value);
   void update();
   void pack();
   void pause( bool p);
