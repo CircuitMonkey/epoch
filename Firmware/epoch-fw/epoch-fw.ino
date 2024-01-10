@@ -81,8 +81,9 @@ void IRAM_ATTR Timer0_ISR() {
 void setup() {
   Serial.begin(115200);
   while (!Serial) delay(10);
-  Serial.println("\n\nEpoch Haptic Generator");
+  delay(500);
   Serial.flush();
+  Serial.println("\n\nEpoch Haptic Generator");
 
   pinMode(TFT_LED, OUTPUT);
   digitalWrite(TFT_LED, HIGH);
@@ -96,35 +97,19 @@ void setup() {
   ts.setRotation(2);  // X/Y==0 top-left.
   vibes.begin();  // vibes assume SPI was set up by TFT
 
-
-  Timer0_Cfg = timerBegin(1, 80, true);  // channel 7, prescaler 80, tick count up.
+  // Set up motor update clock.
+  Timer0_Cfg = timerBegin(1, 80, true);  // channel 1, prescaler 80 (80/80MHz =  1MHz), tick count up.
   timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, true);
-  timerAlarmWrite(Timer0_Cfg, 17000, true);  // doISR every 17000 ticks =17mS
+  timerAlarmWrite(Timer0_Cfg, 100000, true);  // doISR every 100000 ticks = 100mS
+  //timerAlarmWrite(Timer0_Cfg, 17000, true);  // doISR every 17000 ticks = 17mS
   timerAlarmEnable(Timer0_Cfg);
 
   vibes.pause(true);
 
-  digitalWrite(TFT_LED, LOW);
+  digitalWrite(TFT_LED, LOW); // TFT backlight on
   // TODO:  PWM LED brightness
 
-  // read diagnostics (optional but can help debug problems)
-  // uint8_t x = tft.readcommand8(ILI9341_RDMODE);  // Default 0xCA
-  // Serial.print("Display Power Mode: 0x");
-  // Serial.println(x, HEX);
-  // x = tft.readcommand8(ILI9341_RDMADCTL);  // Default 0x24
-  // Serial.print("MADCTL Mode: 0x");
-  // Serial.println(x, HEX);
-  // x = tft.readcommand8(ILI9341_RDPIXFMT);
-  // Serial.print("Pixel Format: 0x");  // Default 0x2;
-  // Serial.println(x, HEX);
-  // x = tft.readcommand8(ILI9341_RDIMGFMT);  // Default 0xC0
-  // Serial.print("Image Format: 0x");
-  // Serial.println(x, HEX);
-  // x = tft.readcommand8(ILI9341_RDSELFDIAG);  // Default 0xE0
-  // Serial.print("Self Diagnostic: 0x");
-  // Serial.println(x, HEX);
-
-  // Serial.println(F("Done!"));
+  //printTftSettings();  // For TFT diagnostics info
 
   ui.begin(&tft, glyph48m_back, glyph48m_pause, glyph48m_play );
   mode_0_start();
