@@ -121,15 +121,6 @@ void mode_2_1_handle_touch(uint8_t btn) {
       case 4:
         slideDragStart = m_2_1_slider[btn-1].getVal();
         break;
-      // case 2:
-      //   slideDragStart = m_1_1_slider[1].getVal();
-      //   break;
-      // case 3:
-      //   slideDragStart = m_1_1_slider[2].getVal();
-      //   break;
-      // case 4:
-      //   slideDragStart = m_1_1_slider[3].getVal();
-      //   break;
       case UI_BTN_PAUSE:
         switch (ui.getPlayMode()) {
           case UI_MODE_PLAY:
