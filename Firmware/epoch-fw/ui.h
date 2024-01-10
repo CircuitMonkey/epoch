@@ -75,6 +75,7 @@ public:
   void drawPausePlay();
   void setBackBtn(uint8_t loc); // 0=none, 1=center, 2=top-right
   void setStyle(uint8_t style); // UI_STYLE_*
+  void setStyleDisc( String topTitle, String botTitle, const unsigned char *ttlBg, const unsigned char *ttlFg, const unsigned char **btnBg, const unsigned char **btnFg);
   void setStyleSlide4(String title, const unsigned char *bg, const unsigned char *fg);
   void setPlayMode( uint8_t mode ); // UI_MODE_*
   uint8_t getPlayMode(); // returns UI_MODE_*

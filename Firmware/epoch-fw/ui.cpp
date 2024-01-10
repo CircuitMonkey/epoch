@@ -167,6 +167,10 @@ void Ui::drawDiscGlyph(uint16_t n, const unsigned char *g1, const unsigned char 
   uint16_t x = 0;
   uint16_t y = 0;
   switch (n) {
+    case 0:
+      x = UI_CX;
+      y = UI_CY;
+      break;
     case 1:
       x = UI_B1_X;
       y = UI_B1_Y;
@@ -256,7 +260,7 @@ void Ui::setStyleSlide4(String title, const unsigned char *bg, const unsigned ch
   blank();
   drawTopGlyph(bg, fg);
 
-  setTopText(title);     // 17 chars
+  setTopText(title);         // 17 chars
   drawTopTxt(UI_GL_W + 12);  // offset text to right of glyph.
 
   setBackBtn(UI_BAK_TR);
@@ -266,6 +270,43 @@ void Ui::setStyleSlide4(String title, const unsigned char *bg, const unsigned ch
   drawPausePlay();             // Pause button
 }
 
+void Ui::setStyleDisc(String topTitle, String botTitle, const unsigned char *ttlBg, const unsigned char *ttlFg, const unsigned char **btnBg, const unsigned char **btnFg) {
+  setStyle(UI_STYLE_DISC);
+  blank();
+
+  setTopText(topTitle);  // 17 chars
+
+  uint8_t indent;
+  if (ttlBg == NULL && ttlFg == NULL) {
+    indent = 0;
+  } else {
+    indent = UI_GL_W + 12;
+    // draw top glyph
+    drawTopGlyph(ttlBg, ttlFg);
+  }
+  drawTopTxt(indent);  // indent by arg.
+
+  setBotText(botTitle);  // 9 chars
+  drawBotTxt();
+
+  drawDiscBase();
+
+  setBackBtn(UI_BAK_CENTER); // place in center.
+
+  // todo for loop
+  for (int i = 0; i < 9; i++) {
+    drawDiscGlyph(i, btnBg[i], btnFg[i]);
+  }
+  // ui.drawDiscGlyph(1, glyph48m_slide_bg, glyph48m_slide_fg);
+  // ui.drawDiscGlyph(2, glyph48m_cycle, glyph48m_cycle);
+  // ui.drawDiscGlyph(3, glyph48m_wave, glyph48m_wave);
+  // ui.drawDiscGlyph(4, glyph48m_pulse, glyph48m_pulse);
+  // ui.drawDiscGlyph(5, glyph48m_blank, glyph48m_blank);
+  // ui.drawDiscGlyph(6, glyph48m_blank, glyph48m_blank);
+  // ui.drawDiscGlyph(7, glyph48m_blank, glyph48m_blank);
+  // ui.drawDiscGlyph(8, glyph48m_blank, glyph48m_blank);
+
+}
 
 void Ui::setPlayMode(uint8_t mode) {
   _playMode = mode;
