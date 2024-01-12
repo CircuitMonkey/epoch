@@ -38,6 +38,7 @@ public:
   void blank(); // clear area and draw frame only
   void update(); // draw or update slider
   uint8_t getVal(); // 0-255
+  uint8_t getMax();
   float getScale();
   void setVal(int16_t v); // 0-255
   void setTitle(String t); // 1-3 characters only
@@ -46,7 +47,7 @@ private:
   Adafruit_ILI9341* _tft;
   uint8_t _value;
   uint8_t _vmax;
-  uint16_t _x;
+  uint16_t _x;  // X location on screen
   boolean _disabled;
   String _title;
 };

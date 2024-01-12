@@ -49,3 +49,7 @@ void mode_0_loop() {
   }
   delay(70);
 }
+
+void mode_0_updateMotors() {
+  vibes.update();
+}

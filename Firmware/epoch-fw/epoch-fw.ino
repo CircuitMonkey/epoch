@@ -47,6 +47,8 @@
 #define VIB_GSCLK 27
 #define VIB_XLAT 21
 
+#define VIB_PI 3.142f
+
 //#define SPI_DEFAULT_FREQ 2000000
 //#define SPI_SETTING     SPISettings(2000000, MSBFIRST, SPI_MODE0)
 
@@ -171,8 +173,19 @@ void loop() {
   }
   pLast.x = p.x;
   pLast.y = p.y;
+
   if ( updateSemaphore ) {
-    vibes.update();
+    switch( guiMode ) {
+      case 0:
+        mode_0_updateMotors();
+        break;
+      case 1:
+        mode_1_updateMotors();
+        break;
+      case 2:
+        mode_2_updateMotors();
+    }
+    //vibes.update();
     updateSemaphore = false;
   }
 }

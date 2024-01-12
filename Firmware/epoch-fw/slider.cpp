@@ -101,6 +101,15 @@ uint8_t Slider::getVal() {
   return _value;
 }
 
+/**
+ * get slider max
+ *
+ * return uint8 with range 0-255
+ */
+uint8_t Slider::getMax() {
+  return _vmax;
+}
+
 float Slider::getScale() {
   return SLIDER_H/(float)_vmax;
 }
