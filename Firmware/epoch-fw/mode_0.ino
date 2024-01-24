@@ -39,6 +39,9 @@ void mode_0_loop() {
         case 2:
           mode_2_0_start();
           break;
+        case 8:
+          mode_8_0_start();
+          break;
       }
       wastouched = istouched;
     

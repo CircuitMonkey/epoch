@@ -131,6 +131,9 @@ void loop() {
     case 2:
       mode_2_loop();
       break;
+    case 8:
+      mode_8_loop();
+      break;
     case 77: // OLD Debug code.  Not used.
       if (istouched) {
         if (!wastouched) {
@@ -184,6 +187,9 @@ void loop() {
         break;
       case 2:
         mode_2_updateMotors();
+        break;
+      case 8:
+        mode_8_updateMotors();
     }
     //vibes.update();
     updateSemaphore = false;
