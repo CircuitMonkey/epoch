@@ -21,6 +21,10 @@ Slider m_2_2_slider[4] = {  // cycle func
   Slider("   ", SLIDER_4_X4, 0, 63)
 };
 
+float mode_2_2_cycle = 0.0; // in Radians 0 - 6.283
+#define MODE_2_2_CYC_MAX 10.0f
+#define MODE_2_2_CYC_MIN 0.4f
+
 // back button is at index 0.
 const unsigned char *m_2_0_glyphs_bg[9] = { glyph48m_back, glyph48m_slide_bg, glyph48m_cycle, glyph48m_wave, glyph48m_pulse, glyph48m_blank, glyph48m_blank, glyph48m_blank, glyph48m_blank };
 const unsigned char *m_2_0_glyphs_fg[9] = { glyph48m_back, glyph48m_slide_fg, glyph48m_cycle, glyph48m_wave, glyph48m_pulse, glyph48m_blank, glyph48m_blank, glyph48m_blank, glyph48m_blank };
@@ -34,22 +38,22 @@ void mode_2_updateMotors() {
       // advanceRads = (cycSecsMax - cycSecsMin)/(slMax-1) * ( slVal - 1 ) / 10.0(ticks in a second)
       float adv;
       if ( m_2_2_slider[1].getVal() > 0 ) {
-        adv = ((MODE_1_2_CYC_MAX-MODE_1_2_CYC_MIN)/(m_2_2_slider[1].getMax()-1.0) * (m_2_2_slider[1].getVal() -1.0));
+        adv = ((MODE_2_2_CYC_MAX-MODE_2_2_CYC_MIN)/(m_2_2_slider[1].getMax()-1.0) * (m_2_2_slider[1].getVal() -1.0));
         adv /= 10.0;
       } else {
         adv = 0.0;
       }
 
-      mode_1_2_cycle += adv;
-      if ( mode_1_2_cycle > VIB_PI*2.0 ) {
-        mode_1_2_cycle = 0.0;
+      mode_2_2_cycle += adv;
+      if ( mode_2_2_cycle > VIB_PI*2.0 ) {
+        mode_2_2_cycle = 0.0;
       }
       // calc new motor values
       // vibeVal = (sin(advanceRads) + 1) * vibMax/2
-      float wav0 = sin(mode_1_2_cycle);
-      float wav1 = sin(mode_1_2_cycle + VIB_PI/2.0); // 90deg phase.
-      float wav2 = sin(mode_1_2_cycle + VIB_PI); // 180deg phase.
-      float wav3 = sin(mode_1_2_cycle + VIB_PI*1.75); // 270deg phase.
+      float wav0 = sin(mode_2_2_cycle);
+      float wav1 = sin(mode_2_2_cycle + VIB_PI/2.0); // 90deg phase.
+      float wav2 = sin(mode_2_2_cycle + VIB_PI); // 180deg phase.
+      float wav3 = sin(mode_2_2_cycle + VIB_PI*1.75); // 270deg phase.
       // note: wav->mot sequence is 0,1,3,2
       float mot0 = (wav0 + 1.0f) / 2.0f * m_2_2_slider[0].getVal();
       float mot1 = (wav1 + 1.0f) / 2.0f * m_2_2_slider[0].getVal();
