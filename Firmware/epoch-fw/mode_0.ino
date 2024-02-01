@@ -39,8 +39,14 @@ void mode_0_loop() {
         case 2:
           mode_2_0_start();
           break;
+        case 4:
+          mode_4_0_start();
+          break;
         case 8:
           mode_8_0_start();
+          break;
+        default:
+          guiMode = 0; // Not a good mode.
           break;
       }
       wastouched = istouched;

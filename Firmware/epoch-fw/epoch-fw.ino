@@ -131,6 +131,9 @@ void loop() {
     case 2:
       mode_2_loop();
       break;
+    case 4:
+      mode_4_loop();
+      break;
     case 8:
       mode_8_loop();
       break;
@@ -187,6 +190,9 @@ void loop() {
         break;
       case 2:
         mode_2_updateMotors();
+        break;
+      case 4:
+        mode_4_updateMotors();
         break;
       case 8:
         mode_8_updateMotors();
