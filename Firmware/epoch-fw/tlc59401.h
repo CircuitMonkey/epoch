@@ -32,10 +32,16 @@
 #endif
 
 #define GS_TIMER_CHANNEL 8
-#define GS_RES 4
-#define GS_FREQ 40980
+// Resolution  1-20 bits
+#define GS_RES 2
+// Duty 50% = half of GS_RES
+#define GS_DUTY 1
+
+//#define GS_FREQ 40980
+// 30KHz
+#define GS_FREQ 30735
+// Not used
 #define GS_TICKS 4096
-#define GS_DUTY 8
 
 class TLC59401_PWM {
 public:
