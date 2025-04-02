@@ -1,6 +1,6 @@
 /**
  Epoch Project - A 16-channel vibrator controller
- with touch screen.
+ with touch screen by Mark J. Koch.
         https://www.patreon.com/maehem
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -15,7 +15,7 @@
   please support Adafruit and open-source hardware by purchasing
   products from Adafruit!
 
-  Written by Limor Fried/Ladyada for Adafruit Industries.
+  Portions Written by Limor Fried/Ladyada for Adafruit Industries.
   MIT license, all text above must be included in any redistribution
  *********************************************************************/
 
@@ -99,12 +99,33 @@ void setup() {
   ts.setRotation(2);  // X/Y==0 top-left.
   vibes.begin();  // vibes assume SPI was set up by TFT
 
+//#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+//     void RH_INTERRUPT_ATTR esp32_timer_interrupt_handler(); // Forward declaration
+//     timer = timerBegin(0, 80, true); // Alarm value will be in in us
+//     timerAttachInterrupt(timer, &esp32_timer_interrupt_handler, true);
+//     timerAlarmWrite(timer, 1000000 / _speed / 8, true);
+//     timerAlarmEnable(timer);
+// #endif
+
+//#elif (RH_PLATFORM == RH_PLATFORM_ESP32)
+//    void RH_INTERRUPT_ATTR esp32_timer_interrupt_handler(); // Forward declaration
+//    timer = timerBegin(1000000);
+//    timerAttachInterrupt(timer, &esp32_timer_interrupt_handler);
+//    timerAlarm(timer, 1000000 / _speed / 8, true, 0);
+//#endif
+
   // Set up motor update clock.
-  Timer0_Cfg = timerBegin(1, 80, true);  // channel 1, prescaler 80 (80/80MHz =  1MHz), tick count up.
-  timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, true);
-  timerAlarmWrite(Timer0_Cfg, 100000, true);  // doISR every 100000 ticks = 100mS
-  //timerAlarmWrite(Timer0_Cfg, 17000, true);  // doISR every 17000 ticks = 17mS
-  timerAlarmEnable(Timer0_Cfg);
+  // OLD
+  //Timer0_Cfg = timerBegin(1, 80, true);  // channel 1, prescaler 80 (80/80MHz =  1MHz), tick count up.
+  //timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR, true);
+  //timerAlarmWrite(Timer0_Cfg, 100000, true);  // doISR every 100000 ticks = 100mS
+  ////timerAlarmWrite(Timer0_Cfg, 17000, true);  // doISR every 17000 ticks = 17mS
+  //timerAlarmEnable(Timer0_Cfg);
+
+  // NEW
+    Timer0_Cfg = timerBegin(1000000);
+    timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR);
+    timerAlarm(Timer0_Cfg, 100000, true, 0);
 
   vibes.pause(true);
 
@@ -133,6 +154,9 @@ void loop() {
       break;
     case 4:
       mode_4_loop();
+      break;
+    case 7:
+      mode_7_loop();
       break;
     case 8:
       mode_8_loop();
@@ -193,6 +217,9 @@ void loop() {
         break;
       case 4:
         mode_4_updateMotors();
+        break;
+      case 7:
+        mode_7_updateMotors();
         break;
       case 8:
         mode_8_updateMotors();
