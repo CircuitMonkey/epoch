@@ -58,9 +58,14 @@ bool TLC59401_PWM::begin(SPIClass &wspi) {
     Serial.println("Vibes: No SPI configured!");
   }
 
-  ledcSetup(GS_TIMER_CHANNEL, GS_FREQ, GS_RES);
-  ledcAttachPin(_gsClkPin, GS_TIMER_CHANNEL);
-  ledcWrite(GS_TIMER_CHANNEL, GS_DUTY);  // Duty Cycle
+  //ledcSetup(GS_TIMER_CHANNEL, GS_FREQ, GS_RES);
+  //ledcAttachPin(_gsClkPin, GS_TIMER_CHANNEL);
+
+  //ledcSetClockSource(GS_TIMER_CHANNEL);
+  ledcAttach(_gsClkPin, GS_FREQ, GS_RES);
+
+  ledcWrite(_gsClkPin, GS_DUTY);  // Duty Cycle
+  //ledcWriteChannel(GS_TIMER_CHANNEL, GS_DUTY);  // Duty Cycle
 
   update();
 
@@ -135,7 +140,7 @@ void TLC59401_PWM::update() {
     mode(HIGH);  // DC mode
     digitalWrite(_xLatPin, LOW);
     blank(HIGH);  // turn off outputs
-    ledcWrite(GS_TIMER_CHANNEL, 0);
+    ledcWrite(_gsClkPin, 0);
     memcpy(&packCopy, &packed, sizeof(packed[0]) * 12);  // SPI will overwrite packCopy
     _pspi->beginTransaction(SPI_SETTING);
     _pspi->transfer(packCopy, 12);  // Packed dot-correction values.
@@ -147,7 +152,7 @@ void TLC59401_PWM::update() {
 
     blank(LOW);  // turn on outputs
     if (!isPaused()) { // re-enable GS Clock
-      ledcWrite(GS_TIMER_CHANNEL, GS_DUTY);
+      ledcWrite(_gsClkPin, GS_DUTY);
     }
   } else {
     Serial.println("Vibes: No SPI configured!");
@@ -171,9 +176,9 @@ void TLC59401_PWM::mode(uint8_t mode) {
 void TLC59401_PWM::pause(bool p) {
   _paused = p;
   if (_paused) {
-    ledcWrite(GS_TIMER_CHANNEL, 0);
+    ledcWrite(_gsClkPin, 0);
   } else {
-    ledcWrite(GS_TIMER_CHANNEL, GS_DUTY);
+    ledcWrite(_gsClkPin, GS_DUTY);
   }
 }
 
