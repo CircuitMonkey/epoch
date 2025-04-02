@@ -42,6 +42,9 @@ void mode_0_loop() {
         case 4:
           mode_4_0_start();
           break;
+        case 7:
+          mode_7_0_start();
+          break;
         case 8:
           mode_8_0_start();
           break;
