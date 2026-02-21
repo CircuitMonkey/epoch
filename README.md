@@ -1,5 +1,5 @@
 # Epoch 1
-A 16 channel hand-held vibrator controller (haptic field emitter). With LCD Touch Screen and SD Card reader.
+A 16 channel hand-held vibrator controller (haptic field emitter). With LCD Touch Screen and SD Card reader. Replaced by [Epoch-2](https://github.com/CircuitMonkey/epoch-2)
 
 ## Features
  - TFT Touch Display - 320x240 - 3.2inch - SPI Type - Resistive Touch
